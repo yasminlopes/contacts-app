@@ -43,7 +43,7 @@ export default function ContactsList({
           {
             render: (item) => (
               <img
-                src={item.photo}
+                src={item.photo ?? '/assets/user-default.png'}
                 alt={item.name}
                 className="size-24 rounded-box"
               />
