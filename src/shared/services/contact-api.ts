@@ -21,7 +21,7 @@ export const updateContact = (id: string, data: ContactUpdate) => {
 export const updatePhoto = (id: string, data: unknown) => {
   return HttpClient.patch(API_ENDPOINS.contacts.updatePhoto(id), data);
 }
-  
+
 export const deletePhoto = (id: string) => {
   return HttpClient.delete(API_ENDPOINS.contacts.deletePhoto(id));
 }
