@@ -12,7 +12,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   onlyDigits?: boolean;
   maxLength?: number;
   minLength?: number;
-  multiline?: boolean;
   rows?: number;
   inputSize?: 'sm' | 'md' | 'lg';
 }
@@ -24,7 +23,6 @@ export default function RHFTextField({
   onlyDigits,
   maxLength,
   minLength,
-  multiline = false,
   rows = 3,
   type = 'text',
   inputSize = 'md',
@@ -79,20 +77,6 @@ export default function RHFTextField({
             {label}
           </label>
 
-          {multiline ? (
-            <textarea
-              {...field}
-              rows={rows}
-              onChange={handleChange(field)}
-              onKeyDown={handleKeyDown}
-              className={`textarea textarea-bordered w-full ${
-                error ? 'textarea-error' : ''
-              }`}
-              maxLength={maxLength}
-              minLength={minLength}
-              {...rest}
-            />
-          ) : (
             <input
               {...field}
               type={type}
@@ -111,7 +95,6 @@ export default function RHFTextField({
               spellCheck={onlyDigits ? 'false' : undefined}
               {...rest}
             />
-          )}
 
           {error && (
             <span className="text-error text-sm mt-1">{error.message}</span>
