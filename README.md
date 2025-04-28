@@ -10,6 +10,8 @@ Este projeto é dividido em duas partes: Front-end e Back-end.
 O **Contacts App** é uma aplicação fullstack para **gerenciamento de contatos** pessoais ou profissionais.  
 Permite **criar, atualizar, deletar e buscar contatos** de maneira prática e eficiente.
 
+![image](https://github.com/user-attachments/assets/9529c7b5-436b-4d48-9ac7-3bdc986cb25f)
+
 ---
 
 ## Tecnologias
