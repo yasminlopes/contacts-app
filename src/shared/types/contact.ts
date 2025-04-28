@@ -14,3 +14,14 @@ export interface ContactCreate {
   phone: string;
   photo?: File | string | null;
 }
+
+export interface ContactUpdate {
+  name?: string;
+  cpf?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface ContactPhoto {
+  photo?: string;
+}

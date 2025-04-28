@@ -13,6 +13,7 @@ interface Props {
   body: ReactNode;
   size?: ModalSize;
   disabled?: boolean;
+  loading?: boolean;
 }
 
 export default function Modal({
@@ -23,6 +24,7 @@ export default function Modal({
   body,
   size = 'md',
   disabled,
+  loading,
 }: Props) {
   const modalRef = useRef<HTMLDialogElement | null>(null);
 
@@ -59,7 +61,7 @@ export default function Modal({
           </Button>
 
           {onConfirm && (
-            <Button onClick={onConfirm} type="submit" disabled={disabled}>
+            <Button onClick={onConfirm} type="submit" disabled={disabled} loading={loading}>
               Salvar
             </Button>
           )}

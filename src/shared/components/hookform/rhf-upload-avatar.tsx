@@ -1,13 +1,16 @@
 import { useRef } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { Camera } from 'lucide-react';
+import { Camera, Trash2 } from 'lucide-react';
 import { convertFileToBase64 } from '../../utils/base64';
 
 interface Props {
   name: string;
+  allowRemove?: boolean;
+  onUpload?: (base64: string) => void; 
+  onRemove?: () => void;
 }
 
-export default function RHFUploadAvatar({ name }: Props) {
+export default function RHFUploadAvatar({ name, allowRemove = false, onUpload, onRemove }: Props) {
   const { control } = useFormContext();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -25,8 +28,18 @@ export default function RHFUploadAvatar({ name }: Props) {
           try {
             const base64 = await convertFileToBase64(file);
             onChange(base64);
+            if (onUpload) {
+              onUpload(base64);
+            }
           } catch (err) {
             console.error('Erro ao converter imagem para base64:', err);
+          }
+        };
+
+        const handleRemove = () => {
+          onChange(null);
+          if (onRemove) {
+            onRemove()
           }
         };
 
@@ -60,6 +73,17 @@ export default function RHFUploadAvatar({ name }: Props) {
                 onChange={handleFileChange}
               />
             </div>
+
+            {allowRemove && preview && (
+              <button
+                type="button"
+                className="btn btn-error btn-sm mt-2"
+                onClick={handleRemove}
+              >
+                <Trash2 size={16} className="mr-2" />
+                Remover Foto
+              </button>
+            )}
           </div>
         );
       }}

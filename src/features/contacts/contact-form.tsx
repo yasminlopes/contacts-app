@@ -1,11 +1,23 @@
 import RHFTextField from '../../shared/components/hookform/rhf-textfield';
 import RHFUploadAvatar from '../../shared/components/hookform/rhf-upload-avatar';
 
-export default function ContactForm() {
+interface Props {
+  contactId?: string;
+  onUpload?: (base64: string) => void;
+  onRemove?: () => void;
+}
+
+export default function ContactForm({ onUpload, onRemove }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-16 items-start w-full">
       <div className="flex flex-col items-center md:items-start gap-2">
-        <RHFUploadAvatar name="photo" />
+      <RHFUploadAvatar
+          name="photo"
+          allowRemove
+          onUpload={onUpload}
+          onRemove={onRemove}
+        />
+
 
         <p className="text-sm text-gray-500 leading-tight text-center md:text-left">
           Permitido: *.jpg, *.png

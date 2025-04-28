@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus, RefreshCcwDotIcon } from 'lucide-react';
 import Button from '../../../shared/components/button';
 import Modal from '../../../shared/components/modal';
@@ -11,11 +11,12 @@ import { useGetAllContacts } from '../../../shared/hooks/use-contact';
 import ContactsList from '../contact-list';
 import { REGEX } from '../../../shared/utils/regex';
 import { isValidCpf } from '../../../shared/validators/cpf-validator';
-import { createContact, deleteContact } from '../../../shared/services/contact-api';
+import { createContact, deleteContact, deletePhoto, updateContact, updatePhoto } from '../../../shared/services/contact-api';
 import { useToast } from '../../../shared/hooks/use-toast';
 import { SearchInput } from '../../../shared/components/search-input';
 import { Pagination } from '../../../shared/components/pagination';
 import { Contact } from '../../../shared/types/contact';
+import { formatCpf, formatPhone } from '../../../shared/utils/formatters';
 
 const schema = yup.object().shape({
   name: yup.string().required('Campo obrigatório'),
@@ -58,8 +59,8 @@ export default function Contacts() {
       email: '',
       phone: '',
       photo: '',
-    },
-  });
+    }
+  })
 
   const {
     handleSubmit,
@@ -69,18 +70,32 @@ export default function Contacts() {
 
   const { addToast } = useToast();
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (formData) => {
     try {
-      const response = await createContact(data);
+      let response;
+
+      const payload = {
+        name: formData.name,
+        cpf: formData.cpf.replace(REGEX.onlyDigits, ''),
+        email: formData.email,
+        phone: formData.phone.replace(REGEX.onlyDigits, ''),
+      }
+      
+      if (selectedContact) {
+        response = await updateContact(selectedContact.guid, payload);
+      } else {
+        response = await createContact(payload);
+      }
+  
       addToast(response?.message, 'success');
       handleClose();
       reset();
-      mutate()
+      mutate();
     } catch (error: unknown) {
       addToast(error instanceof Error ? error.message : String(error), 'error');
     }
-  })
-
+  });
+  
   const handleDeleteContact = async (contactId: string) => {
     try {
       await deleteContact(contactId);
@@ -90,13 +105,58 @@ export default function Contacts() {
       addToast(error instanceof Error ? error.message : String(error), 'error');
     }
   };
-  
 
+  const handleUpload = async (base64: string) => {
+    if (selectedContact?.guid) {
+      try {
+        await updatePhoto(selectedContact?.guid, base64);
+        mutate();
+        addToast('Foto atualizada com sucesso!', 'success');
+      } catch (error: unknown) {
+        addToast(error instanceof Error ? error.message : String(error), 'error');
+      }
+    }
+  }
+
+  const handleRemove = async () => {
+    if (selectedContact?.guid) {
+      try {
+        await deletePhoto(selectedContact?.guid);
+        mutate();
+        addToast('Foto removida com sucesso!', 'success');
+      } catch (error: unknown) {
+        addToast(error instanceof Error ? error.message : String(error), 'error');
+      }
+    }
+  }
+  
   const renderContent = (
     <FormProvider methods={methods} onSubmit={onSubmit}>
-      <ContactForm />
+      <ContactForm
+        onUpload={handleUpload}
+        onRemove={handleRemove}
+      />
     </FormProvider>
   );
+  
+
+  useEffect(() => {
+    if (selectedContact) {
+      reset({
+        ...selectedContact,
+        cpf: formatCpf(selectedContact.cpf),
+        phone: formatPhone(selectedContact.phone),
+      });
+    } else {
+      reset({
+        name: '',
+        cpf: '',
+        email: '',
+        phone: '',
+        photo: '',
+      });
+    }
+  }, [selectedContact, reset]);
 
   return (
     <>
@@ -142,6 +202,7 @@ export default function Contacts() {
         open={isOpen}
         onClose={handleClose}
         onConfirm={onSubmit}
+        loading={methods.formState.isSubmitting}
         title={selectedContact ? 'Editar contato' : 'Adicionar contato'}
         size="lg"
         body={renderContent}

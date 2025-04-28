@@ -4,5 +4,8 @@ export const API_ENDPOINS = {
     viewPhoto: (guid: string) => `/contact/${guid}/photo`,
     create: '/contact',
     delete: (guid: string) => `/contact/${guid}`,
+    update: (guid: string) => `/contact/${guid}`,
+    updatePhoto: (guid: string) => `/contact/${guid}/photo`,
+    deletePhoto: (guid: string) => `/contact/${guid}/photo`,
   },
 };
