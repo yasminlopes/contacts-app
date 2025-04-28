@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "mytheme";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  --color-base-100: #F2F2F2;
+  --color-base-content: #1f1f1f;
+
+  --color-primary: #F27507;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #D914B8;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #D93B75;
+  --color-accent-content: #ffffff;
+
+  --color-warning: #FBBF24;
+  --color-warning-content: #ffffff;
+
+  --color-neutral: #ccc;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #3ABFF8;
+  --color-success: #36D399;
+  --color-error: #F87272;
+}
+
+* {
+    font-family: "Geist", sans-serif;
+}
